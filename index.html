@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DS/ML Practice Exam - Fun Quiz Mode</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .quiz-container {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 600px;
+            padding: 20px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        .question {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option {
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .option:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+        .timer {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            color: #ff5722;
+        }
+        .result {
+            font-size: 1.5em;
+            color: #4caf50;
+            display: none;
+        }
+        .restart-btn {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            display: none;
+        }
+        .restart-btn:hover {
+            background-color: #0056b3;
+        }
+        .progress-bar {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .progress {
+            height: 10px;
+            background-color: #4caf50;
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+        .feedback {
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            display: none;
+        }
+        .code-section {
+            display: none;
+            margin-top: 30px;
+        }
+        .code-problem {
+            margin-bottom: 20px;
+        }
+        .code-problem h3 {
+            font-size: 1.1em;
+        }
+        .code-problem p {
+            font-size: 1em;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin-top: 10px;
+        }
+        #submit-form {
+            display: none;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="timer">Time Left: <span id="time">30</span>s 💨</div>
+        <div class="progress-bar"><div class="progress" id="progress"></div></div>
+        <div class="feedback" id="feedback"></div>
+        <div class="question">Loading your fun DS/ML adventure... 🚀</div>
+        <div class="options"></div>
+        <div class="result">Your score: <span id="score">0</span> out of 40 🎉<br>Great effort! Remember, every mistake is a learning opportunity! 🌟</div>
+        <div id="submit-form">
+            <h3>Submit Your Score 📧</h3>
+            <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST">  <!-- Replace YOUR_FORM_ID with your Formspree ID -->
+                <label for="name">Name:</label><br>
+                <input type="text" id="name" name="name" required><br>
+                <label for="email">Email:</label><br>
+                <input type="email" id="email" name="email" required><br>
+                <input type="hidden" id="hidden-score" name="score">
+                <button type="submit">Send Score</button>
+            </form>
+        </div>
+        <div class="code-section" id="code-section">
+            <h2>Code Exercises (Self-Practice) 🛠️</h2>
+            <p>These are open-ended. Write code in your IDE, test it, and learn! No auto-grading here—focus on understanding. 💡</p>
+            <div class="code-problem">
+                <h3>1. Retrieve and Analyze World Data</h3>
+                <p>Use Python to fetch data from an API like World Bank Indicators. Analyze GDP trends. Hint: Use requests and pandas.</p>
+                <textarea placeholder="Write your code here (for notes)"></textarea>
+            </div>
+            <div class="code-problem">
+                <h3>2. Build a Simple Chatbot</h3>
+                <p>Create an AI chatbot using prompt engineering with OpenAI API. Handle conversation history.</p>
+                <textarea placeholder="Write your code here (for notes)"></textarea>
+            </div>
+            <div class="code-problem">
+                <h3>3. Deep Learning Model in TensorFlow</h3>
+                <p>Build and train a neural network to classify images (e.g., MNIST dataset).</p>
+                <textarea placeholder="Write your code here (for notes)"></textarea>
+            </div>
+            <div class="code-problem">
+                <h3>4. Statistical Distributions</h3>
+                <p>Generate and visualize frequency distributions using numpy and matplotlib.</p>
+                <textarea placeholder="Write your code here (for notes)"></textarea>
+            </div>
+            <div class="code-problem">
+                <h3>5. Summary Statistics</h3>
+                <p>Calculate mean, median, mode, variance, and z-scores for a dataset using pandas.</p>
+                <textarea placeholder="Write your code here (for notes)"></textarea>
+            </div>
+            <div class="code-problem">
+                <h3>6. Probability Calculations</h3>
+                <p>Estimate probabilities, permutations, and combinations for a dice roll simulation.</p>
+                <textarea placeholder="Write your code here (for notes)"></textarea>
+            </div>
+            <div class="code-problem">
+                <h3>7. Conditional Probability</h3>
+                <p>Implement Bayes' theorem to calculate disease probability given test results.</p>
+                <textarea placeholder="Write your code here (for notes)"></textarea>
+            </div>
+            <div class="code-problem">
+                <h3>8. Hypothesis Testing</h3>
+                <p>Perform a t-test on two sample datasets using scipy.</p>
+                <textarea placeholder="Write your code here (for notes)"></textarea>
+            </div>
+            <div class="code-problem">
+                <h3>9. Predict Heart Disease</h3>
+                <p>Build a ML model (e.g., logistic regression) to predict heart disease using scikit-learn.</p>
+                <textarea placeholder="Write your code here (for notes)"></textarea>
+            </div>
+            <div class="code-problem">
+                <h3>10. Predict Insurance Costs</h3>
+                <p>Use linear regression to predict costs based on features like age and BMI.</p>
+                <textarea placeholder="Write your code here (for notes)"></textarea>
+            </div>
+        </div>
+        <button class="restart-btn">Restart Quiz 🔄</button>
+    </div>
+    <script>
+        const quizData = [
+            { question: "What is data science primarily concerned with?", options: ["Analyzing and interpreting data", "Collecting data only", "Storing data", "None"], answer: "Analyzing and interpreting data" },
+            { question: "Which of the following is one of the key data science skills?", options: ["Data Visualization", "Machine Learning", "Statistics", "All of the mentioned"], answer: "All of the mentioned" },
+            { question: "Which of the following is NOT a type of machine learning?", options: ["Computational learning", "Reinforcement learning", "Unsupervised learning", "Supervised learning"], answer: "Computational learning" },
+            { question: "Which characteristic of big data is relatively more concerned to data science?", options: ["Volume", "Velocity", "Variety", "None of the mentioned"], answer: "Variety" },
+            { question: "Which is a good way of performing experiments in data science?", options: ["Generalize to the problem", "Have Replication", "Measure variability", "All of the mentioned"], answer: "All of the mentioned" },
+            { question: "What does the term 'feature engineering' refer to in data science?", options: ["The process of transforming raw data into meaningful features", "The process of gathering more data", "The process of applying machine learning algorithms", "The process of splitting data into training and testing sets"], answer: "The process of transforming raw data into meaningful features" },
+            { question: "Which of the following is the most important language for Data Science?", options: ["R", "Java", "Ruby", "None of the mentioned"], answer: "R" },
+            { question: "What is the role of processing code in the research pipeline?", options: ["Transforms the analytical results into figures and tables", "Transforms the measured data into analytic data", "Transforms the analytic data into measured data", "All of the mentioned"], answer: "Transforms the measured data into analytic data" },
+            { question: "Which of the following is a common method for data preprocessing?", options: ["Data normalization", "Data storage", "Data aggregation", "Data visualization"], answer: "Data normalization" },
+            { question: "Which of the following is the top most important thing in data science?", options: ["data", "question", "answer", "none of the mentioned"], answer: "question" },
+            { question: "In supervised learning, which of the following is required?", options: ["Labeled data", "Only numerical data", "Unlabeled data", "Only categorical data"], answer: "Labeled data" },
+            { question: "What is the purpose of using the 'train-test split' method?", options: ["To evaluate the performance of a machine learning model", "To clean the data", "To visualize the data", "To reduce the dimensionality of the data"], answer: "To evaluate the performance of a machine learning model" },
+            { question: "What is Machine learning?", options: ["The selective acquisition of knowledge through the use of computer programs", "The selective acquisition of knowledge through the use of manual programs", "The autonomous acquisition of knowledge through the use of computer programs", "The autonomous acquisition of knowledge through the use of manual programs"], answer: "The autonomous acquisition of knowledge through the use of computer programs" },
+            { question: "K-Nearest Neighbors (KNN) is classified as what type of machine learning algorithm?", options: ["Instance-based learning", "Parametric learning", "Non-parametric learning", "Model-based learning"], answer: "Instance-based learning" },
+            { question: "Which of the following is not a supervised machine learning algorithm?", options: ["K-means", "Naïve Bayes", "SVM for classification problems", "Decision tree"], answer: "K-means" },
+            { question: "What’s the key benefit of using deep learning for tasks like recognizing images?", options: ["They need less training data than other methods.", "They’re easier to explain and understand than other models.", "They can learn complex details from the data on their own.", "They work faster and are more efficient computationally."], answer: "They can learn complex details from the data on their own." },
+            { question: "Which algorithm is best suited for a binary classification problem?", options: ["K-nearest Neighbors", "Decision Trees", "Random Forest", "Linear Regression"], answer: "Decision Trees" },
+            { question: "What is the key difference between supervised and unsupervised learning?", options: ["Supervised learning requires labeled data, while unsupervised learning does not.", "Supervised learning predicts labels, while unsupervised learning discovers patterns.", "Supervised learning is used for classification, while unsupervised learning is used for regression.", "Supervised learning is always more accurate than unsupervised learning."], answer: "Supervised learning requires labeled data, while unsupervised learning does not." },
+            { question: "Which type of machine learning algorithm falls under the category of “unsupervised learning”?", options: ["Linear Regression", "K-means Clustering", "Decision Trees", "Random Forest"], answer: "K-means Clustering" },
+            { question: "Which one of the following models is a generative model used in machine learning?", options: ["Support vector machines", "Naïve Bayes", "Logistic Regression", "Linear Regression"], answer: "Naïve Bayes" },
+            { question: "What is overfitting?", options: ["Model performs well on training but poor on test", "Poor on training", "Good on both", "None"], answer: "Model performs well on training but poor on test" },
+            { question: "What is cross-validation?", options: ["Technique to evaluate model performance", "Data cleaning", "Feature selection", "None"], answer: "Technique to evaluate model performance" },
+            { question: "Which is a classification algorithm?", options: ["Linear Regression", "K-means", "Logistic Regression", "PCA"], answer: "Logistic Regression" },
+            { question: "What is PCA?", options: ["Dimensionality reduction", "Clustering", "Regression", "Classification"], answer: "Dimensionality reduction" },
+            { question: "What is bias-variance tradeoff?", options: ["Balance between underfit and overfit", "Only bias", "Only variance", "None"], answer: "Balance between underfit and overfit" },
+            { question: "What is ensemble learning?", options: ["Combining multiple models", "Single model", "Data preprocessing", "Visualization"], answer: "Combining multiple models" },
+            { question: "What is a neural network?", options: ["Model inspired by brain", "Linear model", "Tree model", "None"], answer: "Model inspired by brain" },
+            { question: "What is an activation function?", options: ["Introduces non-linearity", "Linear only", "Data normalize", "None"], answer: "Introduces non-linearity" },
+            { question: "What is gradient descent?", options: ["Optimization for finding min loss", "Clustering", "Feature select", "None"], answer: "Optimization for finding min loss" },
+            { question: "What is a confusion matrix?", options: ["Table to evaluate classification performance", "Regression metric", "Clustering", "None"], answer: "Table to evaluate classification performance" },
+            { question: "What is accuracy?", options: ["Correct predictions / total", "Only true pos", "True pos / pos", "None"], answer: "Correct predictions / total" },
+            { question: "What is precision?", options: ["True pos / predicted pos", "True pos / actual pos", "Correct / total", "None"], answer: "True pos / predicted pos" },
+            { question: "What is recall?", options: ["True pos / actual pos", "True pos / predicted pos", "None", "None"], answer: "True pos / actual pos" },
+            { question: "What is F1 score?", options: ["Harmonic mean of precision and recall", "Arithmetic mean", "None", "None"], answer: "Harmonic mean of precision and recall" },
+            { question: "What is unsupervised learning used for?", options: ["Clustering, association", "Prediction with labels", "None", "None"], answer: "Clustering, association" },
+            { question: "What is k-means?", options: ["Clustering alg", "Classification", "Regression", "None"], answer: "Clustering alg" },
+            { question: "What is deep learning?", options: ["Subset of ML with neural nets", "Shallow nets", "None", "None"], answer: "Subset of ML with neural nets" },
+            { question: "What is CNN?", options: ["Convolutional NN for images", "Recurrent for sequences", "None", "None"], answer: "Convolutional NN for images" },
+            { question: "What is RNN?", options: ["Recurrent NN for sequences", "Convolutional", "None", "None"], answer: "Recurrent NN for sequences" },
+            { question: "What is NLP?", options: ["Natural Language Processing", "Number Processing", "None", "None"], answer: "Natural Language Processing" }
+        ];
+        let currentQuestion = 0;
+        let score = 0;
+        let timeLeft = 30;
+        let timerInterval;
+        let feedbackTimeout;
+        const timerEl = document.getElementById('time');
+        const questionEl = document.querySelector('.question');
+        const optionsEl = document.querySelector('.options');
+        const resultEl = document.querySelector('.result');
+        const scoreEl = document.getElementById('score');
+        const restartBtn = document.querySelector('.restart-btn');
+        const progressEl = document.getElementById('progress');
+        const feedbackEl = document.getElementById('feedback');
+        const codeSection = document.getElementById('code-section');
+        const submitForm = document.getElementById('submit-form');
+        const hiddenScore = document.getElementById('hidden-score');
+
+        function loadQuestion() {
+            if (currentQuestion >= quizData.length) {
+                endQuiz();
+                return;
+            }
+            clearInterval(timerInterval);
+            timeLeft = 30;
+            timerEl.textContent = timeLeft;
+            startTimer();
+            const currentQuiz = quizData[currentQuestion];
+            questionEl.textContent = currentQuiz.question;
+            optionsEl.innerHTML = '';
+            currentQuiz.options.forEach(option => {
+                const button = document.createElement('button');
+                button.classList.add('option');
+                button.textContent = option;
+                button.onclick = () => checkAnswer(option);
+                optionsEl.appendChild(button);
+            });
+            updateProgress();
+        }
+
+        function checkAnswer(selectedOption) {
+            clearInterval(timerInterval);
+            feedbackEl.style.display = 'block';
+            if (selectedOption === quizData[currentQuestion].answer) {
+                score++;
+                feedbackEl.textContent = 'Awesome job! 🎉';
+                feedbackEl.style.color = '#4caf50';
+            } else {
+                feedbackEl.textContent = 'Oops, not quite! Keep going 💪';
+                feedbackEl.style.color = '#ff5722';
+            }
+            feedbackTimeout = setTimeout(() => {
+                feedbackEl.style.display = 'none';
+                currentQuestion++;
+                loadQuestion();
+            }, 1500);
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerEl.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    feedbackEl.style.display = 'block';
+                    feedbackEl.textContent = 'Time\'s up! ⏰ Let\'s move on.';
+                    feedbackEl.style.color = '#ff5722';
+                    feedbackTimeout = setTimeout(() => {
+                        feedbackEl.style.display = 'none';
+                        currentQuestion++;
+                        loadQuestion();
+                    }, 1500);
+                }
+            }, 1000);
+        }
+
+        function updateProgress() {
+            const progress = (currentQuestion / quizData.length) * 100;
+            progressEl.style.width = `${progress}%`;
+        }
+
+        function endQuiz() {
+            clearInterval(timerInterval);
+            clearTimeout(feedbackTimeout);
+            questionEl.style.display = 'none';
+            optionsEl.style.display = 'none';
+            document.querySelector('.timer').style.display = 'none';
+            document.querySelector('.progress-bar').style.display = 'none';
+            resultEl.style.display = 'block';
+            scoreEl.textContent = score;
+            submitForm.style.display = 'block';
+            hiddenScore.value = score;
+            codeSection.style.display = 'block';
+            restartBtn.style.display = 'block';
+            if (score >= 30) {
+                resultEl.innerHTML += '<br>Congrats, you\'re a DS/ML rockstar! 🌟';
+            } else if (score >= 20) {
+                resultEl.innerHTML += '<br>Solid effort—keep practicing! 👍';
+            } else {
+                resultEl.innerHTML += '<br>Don\'t worry, Rome wasn\'t built in a day! 📈';
+            }
+        }
+
+        restartBtn.onclick = () => {
+            currentQuestion = 0;
+            score = 0;
+            questionEl.style.display = 'block';
+            optionsEl.style.display = 'flex';
+            document.querySelector('.timer').style.display = 'block';
+            document.querySelector('.progress-bar').style.display = 'block';
+            resultEl.style.display = 'none';
+            submitForm.style.display = 'none';
+            codeSection.style.display = 'none';
+            restartBtn.style.display = 'none';
+            loadQuestion();
+        };
+
+        loadQuestion();
+    </script>
+</body>
+</html>
+Notes on the Code:
+
+Replace YOUR_FORM_ID in the form action with your actual Formspree form ID (see below for setup).
+The MCQs start basic (first 20) and get advanced (last 20).
+Emotional elements: Feedback messages with emojis, motivational end notes, timer with emoji for urgency.
+Code exercises are displayed at the end for self-practice (based on real DS/ML problems).
+How to Launch on GitHub
+Create a GitHub Account: If you don't have one, sign up at github.com.
+Create a New Repository: Go to your GitHub dashboard, click "New" > Name it (e.g., "ds-ml-quiz") > Make it public > Create repository.
+Upload the File: In the repo, click "Add file" > "Upload files" > Drag index.html > Commit changes.
+Enable GitHub Pages: Go to repo Settings > Pages (left menu) > Under "Source", select "main" branch > Save. GitHub will provide a URL like https://yourusername.github.io/ds-ml-quiz/.
+Access the Platform: Visit the URL in a browser. It's live and interactive!
+How to Collect Scores via Email Using Formspree
+Formspree handles form submissions and emails without a server. It's free for up to 50 submissions/month.
+
+Sign Up on Formspree: Go to formspree.io > Register (free tier) > Create a new form. You'll get a form ID (e.g., "xabcde").
+
+Update the Code: Replace YOUR_FORM_ID in the <form action=...> with your ID.
+
+Customize Email Template: In Formspree dashboard > Your form > Settings > Customize the email notification template. Use a good template like this (paste into their editor):
+
+text
+Subject: DS/ML Quiz Score Submission
+
+Hi Admin,
+
+A user has completed the quiz!
+
+Name: {{name}}
+Email: {{email}}
+Score: {{score}} out of 40
+
+Keep up the great work encouraging learners! 🌟
+
+Best,
+Formspree
+This is a simple, professional template with placeholders for data. You can add HTML for styling (e.g., bold text, colors).
+
+Test It: Take the quiz, submit the form at the end. You'll receive an email with the details. Formspree also stores submissions in your dashboard for review.
+
+This setup is fun, educational, and easy to maintain. If you need customizations (e.g., more questions or Pyodide for in-browser code execution), let me know!
+
+Which part of the code should I really copy and paste?
+To create the interactive Data Science/ML Practice Exam platform, you should copy and paste the entire index.html code provided in the previous response into a file named index.html. This single file contains all the necessary HTML, CSS, and JavaScript to run the quiz platform, including the 40 MCQs, 10 code exercises, emotional design elements, and the Formspree form for score submission.
+
+What to Copy
+The full code block starting from <!DOCTYPE html> to the closing </html> tag, including:
+The HTML structure.
+The embedded <style> section (CSS for styling the quiz, progress bar, and emotional elements like feedback messages).
+The embedded <script> section (JavaScript for quiz logic, timer, score calculation, and emotional feedback).
+The form with the Formspree action URL for score submission.
+The code exercises section for self-practice.
+Key Step Before Saving
+Replace the Formspree ID: In the <form> tag, replace YOUR_FORM_ID with your actual Formspree form ID:
+html
+<form action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+To get your Formspree ID:
+Sign up at formspree.io.
+Create a new form.
+Copy the form ID (e.g., xabcde) from your Formspree dashboard and insert it into the URL.
+How to Use the Copied Code
+Create a File: Open a text editor (e.g., Notepad, VS Code) and paste the entire code.
+Save the File: Save it as index.html (ensure the extension is .html).
+Test Locally: Open the file in a browser to test the quiz locally.
+Deploy to GitHub: Follow the GitHub deployment steps provided earlier:
+Create a GitHub repository.
+Upload index.html.
+Enable GitHub Pages in the repo Settings > Pages > Select "main" branch > Save.
+Access the quiz at https://yourusername.github.io/your-repo-name/.
+Important Notes
+The code is self-contained, so you don’t need additional files unless you want to extend it (e.g., separate CSS/JS files or images).
+The 40 MCQs are included in the quizData array in the JavaScript section. The 10 code exercises are in the HTML under <div class="code-section">.
+If you want to modify questions, edit the quizData array in the <script> section by adding or changing question objects.
+For the email template, configure it in your Formspree dashboard as described earlier, using the suggested template or your own.
+If you only want to copy a specific part (e.g., just the questions or the form), let me know, and I can isolate that section for you! Otherwise, the full index.html code is ready to go.
+
+62.9s
+Which part of the code should I copy and paste?
+You should copy and paste the entire index.html code provided in the earlier response, from <!DOCTYPE html> to the closing </html> tag, into a file named index.html. This single file includes everything needed for the interactive Data Science/ML Practice Exam platform:
+
+HTML: The structure of the quiz, including the question display, options, timer, progress bar, form for score submission, and code exercise section.
+CSS (in the <style> tag): Styling for the quiz layout, buttons, feedback messages, and emotional design elements (e.g., colorful progress bar, hover effects).
+JavaScript (in the <script> tag): Logic for loading questions, handling answers, timing (30 seconds per question), calculating scores, displaying feedback (e.g., "Awesome job! 🎉"), and managing the quiz flow.
+Formspree Form: For submitting the user’s name, email, and score.
+40 MCQs and 10 Code Exercises: Embedded in the JavaScript (quizData array for MCQs) and HTML (code exercises under <div class="code-section">).
+Specific Action Required
+Before saving the file, replace the placeholder Formspree ID in this line:
+
+html
+<form action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+with your actual Formspree form ID:
+
+Sign up at formspree.io (free tier is sufficient).
+Create a new form in the Formspree dashboard.
+Copy the form ID (e.g., xabcde) and insert it into the URL, so it becomes, for example:
+html
+<form action="https://formspree.io/f/xabcde" method="POST">
+Steps to Use the Code
+Copy the Code: Select and copy the entire code block from the previous response, starting with <!DOCTYPE html> and ending with </html>.
+Paste into a File: Open a text editor (e.g., Notepad, VS Code) and paste the code.
+Save as index.html: Ensure the file is saved with the .html extension.
+Test Locally: Double-click the file to open it in a browser and test the quiz.
+Deploy to GitHub (as described previously):
+Create a GitHub repository (e.g., ds-ml-quiz).
+Upload index.html to the repository.
+Go to Settings > Pages > Set the source to the main branch > Save.
+Access the live quiz at https://yourusername.github.io/ds-ml-quiz/.
+Notes
+The code is fully self-contained, so no additional files are needed unless you want to add features (e.g., external CSS/JS or images).
+The 40 MCQs are in the quizData array in the JavaScript section. To modify questions, edit this array.
+The 10 code exercises are in the HTML under <div class="code-section">. They’re designed for self-practice (no auto-grading).
+Emotional design is included via feedback messages (e.g., "Oops, not quite! Keep going 💪") and emojis in the JavaScript and HTML.
+If you only want a specific part (e.g., just the quizData array or the form), let me know, and I can provide that section alone. Otherwise, copying the entire code into index.html gives you the complete, ready-to-use platform.
+
+4.6s
