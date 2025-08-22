@@ -3,464 +3,1223 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DS/ML Practice Exam - Fun Quiz Mode</title>
+    <title>Data Science & ML Mastery Challenge</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            color: #333;
+        * {
             margin: 0;
             padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .quiz-container {
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            width: 90%;
-            max-width: 600px;
-            padding: 20px;
-            text-align: center;
             box-sizing: border-box;
         }
-        .question {
-            font-size: 1.2em;
-            margin-bottom: 20px;
-        }
-        .options {
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
             display: flex;
-            flex-direction: column;
-            gap: 10px;
+            align-items: center;
+            justify-content: center;
         }
-        .option {
-            padding: 10px;
-            border: 2px solid #ccc;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s, color 0.3s;
+
+        .container {
+            max-width: 900px;
+            width: 95%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
         }
-        .option:hover {
-            background-color: #007bff;
-            color: #fff;
+
+        .header {
+            background: linear-gradient(135deg, #FF6B6B, #4ECDC4);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
         }
-        .timer {
-            font-size: 1.2em;
-            margin-bottom: 20px;
-            color: #ff5722;
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            animation: shimmer 3s infinite;
         }
-        .result {
-            font-size: 1.5em;
-            color: #4caf50;
-            display: none;
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
         }
-        .restart-btn {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            font-size: 1em;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 20px;
-            display: none;
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            position: relative;
         }
-        .restart-btn:hover {
-            background-color: #0056b3;
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
         }
+
+        .progress-container {
+            padding: 1.5rem 2rem;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+
         .progress-bar {
             width: 100%;
-            background-color: #e0e0e0;
-            border-radius: 5px;
-            margin-bottom: 20px;
+            height: 12px;
+            background: #e9ecef;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 1rem;
         }
-        .progress {
-            height: 10px;
-            background-color: #4caf50;
-            border-radius: 5px;
-            transition: width 0.3s ease;
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FF6B6B, #4ECDC4);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 6px;
         }
-        .feedback {
-            font-size: 1.1em;
-            margin-bottom: 10px;
-            display: none;
+
+        .progress-text {
+            text-align: center;
+            font-weight: 600;
+            color: #495057;
         }
-        .code-section {
-            display: none;
-            margin-top: 30px;
+
+        .question-container {
+            padding: 2rem;
+            min-height: 400px;
         }
-        .code-problem {
-            margin-bottom: 20px;
+
+        .question {
+            margin-bottom: 2rem;
         }
-        .code-problem h3 {
-            font-size: 1.1em;
+
+        .question h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+            line-height: 1.6;
         }
-        .code-problem p {
-            font-size: 1em;
+
+        .difficulty-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
         }
-        textarea {
+
+        .basic {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .intermediate {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .advanced {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .options {
+            display: grid;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .option {
+            padding: 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .option:hover {
+            border-color: #4ECDC4;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .option.selected {
+            border-color: #FF6B6B;
+            background: #fff5f5;
+        }
+
+        .option.correct {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+
+        .option.incorrect {
+            border-color: #dc3545;
+            background: #f8d7da;
+        }
+
+        .code-area {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+
+        .text-input {
             width: 100%;
-            height: 150px;
-            margin-top: 10px;
+            padding: 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 100px;
         }
-        #submit-form {
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e9ecef;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #FF6B6B, #4ECDC4);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .results {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 2rem auto;
+            font-size: 3rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .excellent {
+            background: linear-gradient(135deg, #00b09b, #96c93d);
+        }
+
+        .good {
+            background: linear-gradient(135deg, #4ECDC4, #44A08D);
+        }
+
+        .average {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+        }
+
+        .needs-improvement {
+            background: linear-gradient(135deg, #ff9a9e, #fecfef);
+            color: #333;
+        }
+
+        .feedback {
+            font-size: 1.2rem;
+            margin: 2rem 0;
+            line-height: 1.6;
+        }
+
+        .email-section {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-top: 2rem;
+        }
+
+        .hidden {
             display: none;
-            margin-top: 20px;
+        }
+
+        .celebration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        @keyframes confetti {
+            0% {
+                transform: translateY(-100vh) rotateZ(0deg);
+            }
+            100% {
+                transform: translateY(100vh) rotateZ(360deg);
+            }
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #FF6B6B;
+            animation: confetti 3s linear infinite;
         }
     </style>
 </head>
 <body>
-    <div class="quiz-container">
-        <div class="timer">Time Left: <span id="time">30</span>s 💨</div>
-        <div class="progress-bar"><div class="progress" id="progress"></div></div>
-        <div class="feedback" id="feedback"></div>
-        <div class="question">Loading your fun DS/ML adventure... 🚀</div>
-        <div class="options"></div>
-        <div class="result">Your score: <span id="score">0</span> out of 40 🎉<br>Great effort! Remember, every mistake is a learning opportunity! 🌟</div>
-        <div id="submit-form">
-            <h3>Submit Your Score 📧</h3>
-            <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST">  <!-- Replace YOUR_FORM_ID with your Formspree ID -->
-                <label for="name">Name:</label><br>
-                <input type="text" id="name" name="name" required><br>
-                <label for="email">Email:</label><br>
-                <input type="email" id="email" name="email" required><br>
-                <input type="hidden" id="hidden-score" name="score">
-                <button type="submit">Send Score</button>
-            </form>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Data Science & ML Mastery Challenge</h1>
+            <p>Test your knowledge with 50 carefully crafted questions</p>
         </div>
-        <div class="code-section" id="code-section">
-            <h2>Code Exercises (Self-Practice) 🛠️</h2>
-            <p>These are open-ended. Write code in your IDE, test it, and learn! No auto-grading here—focus on understanding. 💡</p>
-            <div class="code-problem">
-                <h3>1. Retrieve and Analyze World Data</h3>
-                <p>Use Python to fetch data from an API like World Bank Indicators. Analyze GDP trends. Hint: Use requests and pandas.</p>
-                <textarea placeholder="Write your code here (for notes)"></textarea>
-            </div>
-            <div class="code-problem">
-                <h3>2. Build a Simple Chatbot</h3>
-                <p>Create an AI chatbot using prompt engineering with OpenAI API. Handle conversation history.</p>
-                <textarea placeholder="Write your code here (for notes)"></textarea>
-            </div>
-            <div class="code-problem">
-                <h3>3. Deep Learning Model in TensorFlow</h3>
-                <p>Build and train a neural network to classify images (e.g., MNIST dataset).</p>
-                <textarea placeholder="Write your code here (for notes)"></textarea>
-            </div>
-            <div class="code-problem">
-                <h3>4. Statistical Distributions</h3>
-                <p>Generate and visualize frequency distributions using numpy and matplotlib.</p>
-                <textarea placeholder="Write your code here (for notes)"></textarea>
-            </div>
-            <div class="code-problem">
-                <h3>5. Summary Statistics</h3>
-                <p>Calculate mean, median, mode, variance, and z-scores for a dataset using pandas.</p>
-                <textarea placeholder="Write your code here (for notes)"></textarea>
-            </div>
-            <div class="code-problem">
-                <h3>6. Probability Calculations</h3>
-                <p>Estimate probabilities, permutations, and combinations for a dice roll simulation.</p>
-                <textarea placeholder="Write your code here (for notes)"></textarea>
-            </div>
-            <div class="code-problem">
-                <h3>7. Conditional Probability</h3>
-                <p>Implement Bayes' theorem to calculate disease probability given test results.</p>
-                <textarea placeholder="Write your code here (for notes)"></textarea>
-            </div>
-            <div class="code-problem">
-                <h3>8. Hypothesis Testing</h3>
-                <p>Perform a t-test on two sample datasets using scipy.</p>
-                <textarea placeholder="Write your code here (for notes)"></textarea>
-            </div>
-            <div class="code-problem">
-                <h3>9. Predict Heart Disease</h3>
-                <p>Build a ML model (e.g., logistic regression) to predict heart disease using scikit-learn.</p>
-                <textarea placeholder="Write your code here (for notes)"></textarea>
-            </div>
-            <div class="code-problem">
-                <h3>10. Predict Insurance Costs</h3>
-                <p>Use linear regression to predict costs based on features like age and BMI.</p>
-                <textarea placeholder="Write your code here (for notes)"></textarea>
-            </div>
-        </div>
-        <button class="restart-btn">Restart Quiz 🔄</button>
-    </div>
-    <script>
-        const quizData = [
-            { question: "What is data science primarily concerned with?", options: ["Analyzing and interpreting data", "Collecting data only", "Storing data", "None"], answer: "Analyzing and interpreting data" },
-            { question: "Which of the following is one of the key data science skills?", options: ["Data Visualization", "Machine Learning", "Statistics", "All of the mentioned"], answer: "All of the mentioned" },
-            { question: "Which of the following is NOT a type of machine learning?", options: ["Computational learning", "Reinforcement learning", "Unsupervised learning", "Supervised learning"], answer: "Computational learning" },
-            { question: "Which characteristic of big data is relatively more concerned to data science?", options: ["Volume", "Velocity", "Variety", "None of the mentioned"], answer: "Variety" },
-            { question: "Which is a good way of performing experiments in data science?", options: ["Generalize to the problem", "Have Replication", "Measure variability", "All of the mentioned"], answer: "All of the mentioned" },
-            { question: "What does the term 'feature engineering' refer to in data science?", options: ["The process of transforming raw data into meaningful features", "The process of gathering more data", "The process of applying machine learning algorithms", "The process of splitting data into training and testing sets"], answer: "The process of transforming raw data into meaningful features" },
-            { question: "Which of the following is the most important language for Data Science?", options: ["R", "Java", "Ruby", "None of the mentioned"], answer: "R" },
-            { question: "What is the role of processing code in the research pipeline?", options: ["Transforms the analytical results into figures and tables", "Transforms the measured data into analytic data", "Transforms the analytic data into measured data", "All of the mentioned"], answer: "Transforms the measured data into analytic data" },
-            { question: "Which of the following is a common method for data preprocessing?", options: ["Data normalization", "Data storage", "Data aggregation", "Data visualization"], answer: "Data normalization" },
-            { question: "Which of the following is the top most important thing in data science?", options: ["data", "question", "answer", "none of the mentioned"], answer: "question" },
-            { question: "In supervised learning, which of the following is required?", options: ["Labeled data", "Only numerical data", "Unlabeled data", "Only categorical data"], answer: "Labeled data" },
-            { question: "What is the purpose of using the 'train-test split' method?", options: ["To evaluate the performance of a machine learning model", "To clean the data", "To visualize the data", "To reduce the dimensionality of the data"], answer: "To evaluate the performance of a machine learning model" },
-            { question: "What is Machine learning?", options: ["The selective acquisition of knowledge through the use of computer programs", "The selective acquisition of knowledge through the use of manual programs", "The autonomous acquisition of knowledge through the use of computer programs", "The autonomous acquisition of knowledge through the use of manual programs"], answer: "The autonomous acquisition of knowledge through the use of computer programs" },
-            { question: "K-Nearest Neighbors (KNN) is classified as what type of machine learning algorithm?", options: ["Instance-based learning", "Parametric learning", "Non-parametric learning", "Model-based learning"], answer: "Instance-based learning" },
-            { question: "Which of the following is not a supervised machine learning algorithm?", options: ["K-means", "Naïve Bayes", "SVM for classification problems", "Decision tree"], answer: "K-means" },
-            { question: "What’s the key benefit of using deep learning for tasks like recognizing images?", options: ["They need less training data than other methods.", "They’re easier to explain and understand than other models.", "They can learn complex details from the data on their own.", "They work faster and are more efficient computationally."], answer: "They can learn complex details from the data on their own." },
-            { question: "Which algorithm is best suited for a binary classification problem?", options: ["K-nearest Neighbors", "Decision Trees", "Random Forest", "Linear Regression"], answer: "Decision Trees" },
-            { question: "What is the key difference between supervised and unsupervised learning?", options: ["Supervised learning requires labeled data, while unsupervised learning does not.", "Supervised learning predicts labels, while unsupervised learning discovers patterns.", "Supervised learning is used for classification, while unsupervised learning is used for regression.", "Supervised learning is always more accurate than unsupervised learning."], answer: "Supervised learning requires labeled data, while unsupervised learning does not." },
-            { question: "Which type of machine learning algorithm falls under the category of “unsupervised learning”?", options: ["Linear Regression", "K-means Clustering", "Decision Trees", "Random Forest"], answer: "K-means Clustering" },
-            { question: "Which one of the following models is a generative model used in machine learning?", options: ["Support vector machines", "Naïve Bayes", "Logistic Regression", "Linear Regression"], answer: "Naïve Bayes" },
-            { question: "What is overfitting?", options: ["Model performs well on training but poor on test", "Poor on training", "Good on both", "None"], answer: "Model performs well on training but poor on test" },
-            { question: "What is cross-validation?", options: ["Technique to evaluate model performance", "Data cleaning", "Feature selection", "None"], answer: "Technique to evaluate model performance" },
-            { question: "Which is a classification algorithm?", options: ["Linear Regression", "K-means", "Logistic Regression", "PCA"], answer: "Logistic Regression" },
-            { question: "What is PCA?", options: ["Dimensionality reduction", "Clustering", "Regression", "Classification"], answer: "Dimensionality reduction" },
-            { question: "What is bias-variance tradeoff?", options: ["Balance between underfit and overfit", "Only bias", "Only variance", "None"], answer: "Balance between underfit and overfit" },
-            { question: "What is ensemble learning?", options: ["Combining multiple models", "Single model", "Data preprocessing", "Visualization"], answer: "Combining multiple models" },
-            { question: "What is a neural network?", options: ["Model inspired by brain", "Linear model", "Tree model", "None"], answer: "Model inspired by brain" },
-            { question: "What is an activation function?", options: ["Introduces non-linearity", "Linear only", "Data normalize", "None"], answer: "Introduces non-linearity" },
-            { question: "What is gradient descent?", options: ["Optimization for finding min loss", "Clustering", "Feature select", "None"], answer: "Optimization for finding min loss" },
-            { question: "What is a confusion matrix?", options: ["Table to evaluate classification performance", "Regression metric", "Clustering", "None"], answer: "Table to evaluate classification performance" },
-            { question: "What is accuracy?", options: ["Correct predictions / total", "Only true pos", "True pos / pos", "None"], answer: "Correct predictions / total" },
-            { question: "What is precision?", options: ["True pos / predicted pos", "True pos / actual pos", "Correct / total", "None"], answer: "True pos / predicted pos" },
-            { question: "What is recall?", options: ["True pos / actual pos", "True pos / predicted pos", "None", "None"], answer: "True pos / actual pos" },
-            { question: "What is F1 score?", options: ["Harmonic mean of precision and recall", "Arithmetic mean", "None", "None"], answer: "Harmonic mean of precision and recall" },
-            { question: "What is unsupervised learning used for?", options: ["Clustering, association", "Prediction with labels", "None", "None"], answer: "Clustering, association" },
-            { question: "What is k-means?", options: ["Clustering alg", "Classification", "Regression", "None"], answer: "Clustering alg" },
-            { question: "What is deep learning?", options: ["Subset of ML with neural nets", "Shallow nets", "None", "None"], answer: "Subset of ML with neural nets" },
-            { question: "What is CNN?", options: ["Convolutional NN for images", "Recurrent for sequences", "None", "None"], answer: "Convolutional NN for images" },
-            { question: "What is RNN?", options: ["Recurrent NN for sequences", "Convolutional", "None", "None"], answer: "Recurrent NN for sequences" },
-            { question: "What is NLP?", options: ["Natural Language Processing", "Number Processing", "None", "None"], answer: "Natural Language Processing" }
-        ];
-        let currentQuestion = 0;
-        let score = 0;
-        let timeLeft = 30;
-        let timerInterval;
-        let feedbackTimeout;
-        const timerEl = document.getElementById('time');
-        const questionEl = document.querySelector('.question');
-        const optionsEl = document.querySelector('.options');
-        const resultEl = document.querySelector('.result');
-        const scoreEl = document.getElementById('score');
-        const restartBtn = document.querySelector('.restart-btn');
-        const progressEl = document.getElementById('progress');
-        const feedbackEl = document.getElementById('feedback');
-        const codeSection = document.getElementById('code-section');
-        const submitForm = document.getElementById('submit-form');
-        const hiddenScore = document.getElementById('hidden-score');
 
-        function loadQuestion() {
-            if (currentQuestion >= quizData.length) {
-                endQuiz();
-                return;
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text" id="progressText">Question 1 of 50</div>
+        </div>
+
+        <div class="question-container" id="questionContainer">
+            <!-- Questions will be populated here -->
+        </div>
+
+        <div class="results hidden" id="resultsContainer">
+            <h2>🎉 Challenge Complete!</h2>
+            <div class="score-circle" id="scoreCircle">
+                <span id="finalScore">0%</span>
+            </div>
+            <div class="feedback" id="feedback"></div>
+            
+            <div class="email-section">
+                <h3>📧 Get Your Detailed Report</h3>
+                <p>Enter your email to receive a comprehensive analysis of your performance:</p>
+                <input type="email" id="emailInput" placeholder="your.email@example.com" class="text-input" style="min-height: auto; margin: 1rem 0;">
+                <button class="btn btn-primary" onclick="sendResults()">Send My Report</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="celebration hidden" id="celebration"></div>
+
+    <script>
+        const questions = [
+            // BASIC LEVEL (Questions 1-15)
+            {
+                id: 1,
+                type: 'mcq',
+                difficulty: 'basic',
+                question: 'What does "ML" stand for in data science?',
+                options: [
+                    'Machine Language',
+                    'Machine Learning',
+                    'Mathematical Logic',
+                    'Multi-Level'
+                ],
+                correct: 1
+            },
+            {
+                id: 2,
+                type: 'mcq',
+                difficulty: 'basic',
+                question: 'Which of the following is NOT a type of machine learning?',
+                options: [
+                    'Supervised Learning',
+                    'Unsupervised Learning',
+                    'Reinforcement Learning',
+                    'Deterministic Learning'
+                ],
+                correct: 3
+            },
+            {
+                id: 3,
+                type: 'mcq',
+                difficulty: 'basic',
+                question: 'What is the primary goal of data preprocessing?',
+                options: [
+                    'To make data larger',
+                    'To clean and prepare data for analysis',
+                    'To visualize data',
+                    'To store data permanently'
+                ],
+                correct: 1
+            },
+            {
+                id: 4,
+                type: 'mcq',
+                difficulty: 'basic',
+                question: 'Which Python library is most commonly used for data manipulation?',
+                options: [
+                    'NumPy',
+                    'Pandas',
+                    'Matplotlib',
+                    'Scikit-learn'
+                ],
+                correct: 1
+            },
+            {
+                id: 5,
+                type: 'mcq',
+                difficulty: 'basic',
+                question: 'What does CSV stand for?',
+                options: [
+                    'Computer System Values',
+                    'Comma Separated Values',
+                    'Central Storage Variable',
+                    'Core Statistical Variance'
+                ],
+                correct: 1
+            },
+            {
+                id: 6,
+                type: 'mcq',
+                difficulty: 'basic',
+                question: 'In a dataset, what is a "feature"?',
+                options: [
+                    'A row of data',
+                    'An individual data point',
+                    'A column or attribute',
+                    'The target variable'
+                ],
+                correct: 2
+            },
+            {
+                id: 7,
+                type: 'mcq',
+                difficulty: 'basic',
+                question: 'What is overfitting in machine learning?',
+                options: [
+                    'When a model is too simple',
+                    'When a model performs poorly on training data',
+                    'When a model memorizes training data but fails on new data',
+                    'When a model takes too long to train'
+                ],
+                correct: 2
+            },
+            {
+                id: 8,
+                type: 'mcq',
+                difficulty: 'basic',
+                question: 'Which of these is a supervised learning algorithm?',
+                options: [
+                    'K-means clustering',
+                    'Linear regression',
+                    'PCA',
+                    'DBSCAN'
+                ],
+                correct: 1
+            },
+            {
+                id: 9,
+                type: 'mcq',
+                difficulty: 'basic',
+                question: 'What is the purpose of train-test split?',
+                options: [
+                    'To speed up training',
+                    'To evaluate model performance on unseen data',
+                    'To reduce memory usage',
+                    'To clean the data'
+                ],
+                correct: 1
+            },
+            {
+                id: 10,
+                type: 'mcq',
+                difficulty: 'basic',
+                question: 'Which metric is commonly used for classification problems?',
+                options: [
+                    'Mean Squared Error',
+                    'Accuracy',
+                    'R-squared',
+                    'Mean Absolute Error'
+                ],
+                correct: 1
+            },
+            {
+                id: 11,
+                type: 'mcq',
+                difficulty: 'basic',
+                question: 'What does API stand for?',
+                options: [
+                    'Application Programming Interface',
+                    'Automated Program Integration',
+                    'Advanced Python Implementation',
+                    'Applied Programming Intelligence'
+                ],
+                correct: 0
+            },
+            {
+                id: 12,
+                type: 'mcq',
+                difficulty: 'basic',
+                question: 'Which of these is used for data visualization in Python?',
+                options: [
+                    'NumPy',
+                    'Pandas',
+                    'Matplotlib',
+                    'Sklearn'
+                ],
+                correct: 2
+            },
+            {
+                id: 13,
+                type: 'mcq',
+                difficulty: 'basic',
+                question: 'What is a DataFrame in pandas?',
+                options: [
+                    'A type of graph',
+                    'A 2-dimensional labeled data structure',
+                    'A machine learning model',
+                    'A data visualization tool'
+                ],
+                correct: 1
+            },
+            {
+                id: 14,
+                type: 'mcq',
+                difficulty: 'basic',
+                question: 'Which of these represents missing data in pandas?',
+                options: [
+                    'NULL',
+                    'NaN',
+                    'None',
+                    'All of the above'
+                ],
+                correct: 3
+            },
+            {
+                id: 15,
+                type: 'mcq',
+                difficulty: 'basic',
+                question: 'What is the first step in any data science project?',
+                options: [
+                    'Build the model',
+                    'Define the problem',
+                    'Clean the data',
+                    'Deploy the solution'
+                ],
+                correct: 1
+            },
+
+            // INTERMEDIATE LEVEL (Questions 16-35)
+            {
+                id: 16,
+                type: 'mcq',
+                difficulty: 'intermediate',
+                question: 'What is the difference between bagging and boosting?',
+                options: [
+                    'Bagging trains models sequentially, boosting trains in parallel',
+                    'Bagging trains models in parallel, boosting trains sequentially',
+                    'There is no difference',
+                    'Bagging is for regression, boosting is for classification'
+                ],
+                correct: 1
+            },
+            {
+                id: 17,
+                type: 'mcq',
+                difficulty: 'intermediate',
+                question: 'In cross-validation, what does "k" represent in k-fold CV?',
+                options: [
+                    'Number of features',
+                    'Number of folds/partitions',
+                    'Number of models',
+                    'Number of iterations'
+                ],
+                correct: 1
+            },
+            {
+                id: 18,
+                type: 'mcq',
+                difficulty: 'intermediate',
+                question: 'What is the curse of dimensionality?',
+                options: [
+                    'Too few features to build good models',
+                    'Problems that arise when working with high-dimensional data',
+                    'When models become too complex',
+                    'When data has too many rows'
+                ],
+                correct: 1
+            },
+            {
+                id: 19,
+                type: 'mcq',
+                difficulty: 'intermediate',
+                question: 'Which regularization technique adds the sum of absolute values of parameters?',
+                options: [
+                    'L1 (Lasso)',
+                    'L2 (Ridge)',
+                    'Elastic Net',
+                    'Dropout'
+                ],
+                correct: 0
+            },
+            {
+                id: 20,
+                type: 'mcq',
+                difficulty: 'intermediate',
+                question: 'What is the main advantage of Random Forest over Decision Trees?',
+                options: [
+                    'Faster training',
+                    'Better interpretability',
+                    'Reduced overfitting',
+                    'Simpler implementation'
+                ],
+                correct: 2
+            },
+            {
+                id: 21,
+                type: 'mcq',
+                difficulty: 'intermediate',
+                question: 'In PCA, what do the principal components represent?',
+                options: [
+                    'Original features',
+                    'Directions of maximum variance',
+                    'Cluster centers',
+                    'Classification boundaries'
+                ],
+                correct: 1
+            },
+            {
+                id: 22,
+                type: 'mcq',
+                difficulty: 'intermediate',
+                question: 'What is the purpose of feature scaling?',
+                options: [
+                    'To reduce the number of features',
+                    'To ensure features contribute equally to distance calculations',
+                    'To remove outliers',
+                    'To increase model complexity'
+                ],
+                correct: 1
+            },
+            {
+                id: 23,
+                type: 'mcq',
+                difficulty: 'intermediate',
+                question: 'Which evaluation metric is best for imbalanced datasets?',
+                options: [
+                    'Accuracy',
+                    'Precision',
+                    'F1-score',
+                    'Mean Squared Error'
+                ],
+                correct: 2
+            },
+            {
+                id: 24,
+                type: 'mcq',
+                difficulty: 'intermediate',
+                question: 'What does AUC-ROC measure?',
+                options: [
+                    'Model accuracy',
+                    'Model complexity',
+                    'Model ability to distinguish between classes',
+                    'Training time'
+                ],
+                correct: 2
+            },
+            {
+                id: 25,
+                type: 'mcq',
+                difficulty: 'intermediate',
+                question: 'In gradient descent, what does the learning rate control?',
+                options: [
+                    'Number of iterations',
+                    'Size of steps toward the minimum',
+                    'Number of features used',
+                    'Complexity of the model'
+                ],
+                correct: 1
+            },
+            {
+                id: 26,
+                type: 'mcq',
+                difficulty: 'intermediate',
+                question: 'What is ensemble learning?',
+                options: [
+                    'Training one very complex model',
+                    'Combining multiple models to make predictions',
+                    'Using unsupervised learning techniques',
+                    'Preprocessing data before modeling'
+                ],
+                correct: 1
+            },
+            {
+                id: 27,
+                type: 'mcq',
+                difficulty: 'intermediate',
+                question: 'Which algorithm is sensitive to outliers?',
+                options: [
+                    'Decision Trees',
+                    'Random Forest',
+                    'K-Means Clustering',
+                    'Naive Bayes'
+                ],
+                correct: 2
+            },
+            {
+                id: 28,
+                type: 'mcq',
+                difficulty: 'intermediate',
+                question: 'What is the main assumption of Naive Bayes?',
+                options: [
+                    'Features are normally distributed',
+                    'Features are independent',
+                    'Data is linear',
+                    'No missing values'
+                ],
+                correct: 1
+            },
+            {
+                id: 29,
+                type: 'mcq',
+                difficulty: 'intermediate',
+                question: 'In time series analysis, what is stationarity?',
+                options: [
+                    'Data that doesn\'t change over time',
+                    'Data with constant mean and variance over time',
+                    'Data with no missing values',
+                    'Data that is normally distributed'
+                ],
+                correct: 1
+            },
+            {
+                id: 30,
+                type: 'mcq',
+                difficulty: 'intermediate',
+                question: 'What is the purpose of dropout in neural networks?',
+                options: [
+                    'Speed up training',
+                    'Prevent overfitting',
+                    'Reduce memory usage',
+                    'Improve accuracy'
+                ],
+                correct: 1
+            },
+            {
+                id: 31,
+                type: 'text',
+                difficulty: 'intermediate',
+                question: 'Complete this Python code to calculate the mean of a list:\n\ndef calculate_mean(numbers):\n    return ___________',
+                answer: 'sum(numbers) / len(numbers)'
+            },
+            {
+                id: 32,
+                type: 'mcq',
+                difficulty: 'intermediate',
+                question: 'What is the difference between Type I and Type II errors?',
+                options: [
+                    'Type I: False Positive, Type II: False Negative',
+                    'Type I: False Negative, Type II: False Positive',
+                    'Type I: Accuracy, Type II: Precision',
+                    'Type I: Training error, Type II: Test error'
+                ],
+                correct: 0
+            },
+            {
+                id: 33,
+                type: 'mcq',
+                difficulty: 'intermediate',
+                question: 'Which distance metric is used in K-Means clustering by default?',
+                options: [
+                    'Manhattan distance',
+                    'Euclidean distance',
+                    'Cosine similarity',
+                    'Hamming distance'
+                ],
+                correct: 1
+            },
+            {
+                id: 34,
+                type: 'mcq',
+                difficulty: 'intermediate',
+                question: 'What is the purpose of GridSearchCV?',
+                options: [
+                    'To visualize data',
+                    'To find optimal hyperparameters',
+                    'To clean missing values',
+                    'To split data'
+                ],
+                correct: 1
+            },
+            {
+                id: 35,
+                type: 'mcq',
+                difficulty: 'intermediate',
+                question: 'In SQL, which JOIN returns all records from both tables?',
+                options: [
+                    'INNER JOIN',
+                    'LEFT JOIN',
+                    'RIGHT JOIN',
+                    'FULL OUTER JOIN'
+                ],
+                correct: 3
+            },
+
+            // ADVANCED LEVEL (Questions 36-50)
+            {
+                id: 36,
+                type: 'mcq',
+                difficulty: 'advanced',
+                question: 'What is the vanishing gradient problem in deep learning?',
+                options: [
+                    'Gradients become too large during backpropagation',
+                    'Gradients become very small in early layers during backpropagation',
+                    'Gradients disappear completely',
+                    'Gradients change sign randomly'
+                ],
+                correct: 1
+            },
+            {
+                id: 37,
+                type: 'mcq',
+                difficulty: 'advanced',
+                question: 'Which activation function helps mitigate the vanishing gradient problem?',
+                options: [
+                    'Sigmoid',
+                    'Tanh',
+                    'ReLU',
+                    'Linear'
+                ],
+                correct: 2
+            },
+            {
+                id: 38,
+                type: 'mcq',
+                difficulty: 'advanced',
+                question: 'In reinforcement learning, what does the Q-function represent?',
+                options: [
+                    'Quality of the model',
+                    'Expected reward for taking action a in state s',
+                    'Probability distribution over actions',
+                    'Number of steps to goal'
+                ],
+                correct: 1
+            },
+            {
+                id: 39,
+                type: 'mcq',
+                difficulty: 'advanced',
+                question: 'What is the main advantage of XGBoost over traditional gradient boosting?',
+                options: [
+                    'Simpler implementation',
+                    'Faster training and better performance',
+                    'No hyperparameters to tune',
+                    'Works only with numerical data'
+                ],
+                correct: 1
+            },
+            {
+                id: 40,
+                type: 'mcq',
+                difficulty: 'advanced',
+                question: 'In transformer architecture, what is the purpose of self-attention?',
+                options: [
+                    'To reduce model size',
+                    'To allow the model to focus on relevant parts of the input',
+                    'To speed up training',
+                    'To prevent overfitting'
+                ],
+                correct: 1
+            },
+            {
+                id: 41,
+                type: 'text',
+                difficulty: 'advanced',
+                question: 'Explain the key difference between batch gradient descent and stochastic gradient descent in terms of computational efficiency and convergence.',
+                answer: 'Batch gradient descent uses the entire dataset to compute gradients, making it computationally expensive but providing stable convergence. Stochastic gradient descent uses one sample at a time, making it faster per iteration but with noisy convergence.'
+            },
+            {
+                id: 42,
+                type: 'mcq',
+                difficulty: 'advanced',
+                question: 'What is the purpose of batch normalization in neural networks?',
+                options: [
+                    'To normalize input data',
+                    'To normalize activations within the network',
+                    'To reduce the number of parameters',
+                    'To prevent overfitting'
+                ],
+                correct: 1
+            },
+            {
+                id: 43,
+                type: 'mcq',
+                difficulty: 'advanced',
+                question: 'In GANs (Generative Adversarial Networks), what is the discriminator trying to do?',
+                options: [
+                    'Generate realistic data',
+                    'Distinguish between real and fake data',
+                    'Optimize the generator',
+                    'Reduce training time'
+                ],
+                correct: 1
+            },
+            {
+                id: 44,
+                type: 'mcq',
+                difficulty: 'advanced',
+                question: 'What is the difference between LSTM and GRU?',
+                options: [
+                    'LSTM has 3 gates, GRU has 2 gates',
+                    'LSTM is for classification, GRU is for regression',
+                    'GRU is always better than LSTM',
+                    'They are exactly the same'
+                ],
+                correct: 0
+            },
+            {
+                id: 45,
+                type: 'mcq',
+                difficulty: 'advanced',
+                question: 'What is transfer learning in deep learning?',
+                options: [
+                    'Moving data between systems',
+                    'Using pre-trained models on new tasks',
+                    'Converting between model formats',
+                    'Sharing weights between layers'
+                ],
+                correct: 1
+            },
+            {
+                id: 46,
+                type: 'text',
+                difficulty: 'advanced',
+                question: 'What is the mathematical formula for calculating the Gini impurity in decision trees?',
+                answer: 'Gini = 1 - Σ(pi)² where pi is the probability of class i'
+            },
+            {
+                id: 47,
+                type: 'mcq',
+                difficulty: 'advanced',
+                question: 'In A/B testing, what is the multiple comparisons problem?',
+                options: [
+                    'Testing multiple features at once',
+                    'Increased chance of false positives when testing multiple hypotheses',
+                    'Comparing more than two groups',
+                    'Running tests for too long'
+                ],
+                correct: 1
+            },
+            {
+                id: 48,
+                type: 'mcq',
+                difficulty: 'advanced',
+                question: 'What is the purpose of the attention mechanism in neural networks?',
+                options: [
+                    'To reduce computational cost',
+                    'To allow models to focus on relevant parts of input',
+                    'To prevent gradient vanishing',
+                    'To normalize inputs'
+                ],
+                correct: 1
+            },
+            {
+                id: 49,
+                type: 'text',
+                difficulty: 'advanced',
+                question: 'Describe what happens during the forward pass and backward pass in neural network training.',
+                answer: 'Forward pass: Input data flows through the network, activations are computed layer by layer to produce predictions. Backward pass: Gradients are computed starting from the loss function and propagated back through the network to update weights via backpropagation.'
+            },
+            {
+                id: 50,
+                type: 'mcq',
+                difficulty: 'advanced',
+                question: 'What is the main challenge in federated learning?',
+                options: [
+                    'Lack of computational power',
+                    'Data privacy and communication efficiency',
+                    'Small dataset sizes',
+                    'Limited algorithms available'
+                ],
+                correct: 1
             }
-            clearInterval(timerInterval);
-            timeLeft = 30;
-            timerEl.textContent = timeLeft;
-            startTimer();
-            const currentQuiz = quizData[currentQuestion];
-            questionEl.textContent = currentQuiz.question;
-            optionsEl.innerHTML = '';
-            currentQuiz.options.forEach(option => {
-                const button = document.createElement('button');
-                button.classList.add('option');
-                button.textContent = option;
-                button.onclick = () => checkAnswer(option);
-                optionsEl.appendChild(button);
-            });
+        ];
+
+        let currentQuestion = 0;
+        let userAnswers = {};
+        let score = 0;
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressText').textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
+        }
+
+        function renderQuestion() {
+            const question = questions[currentQuestion];
+            const container = document.getElementById('questionContainer');
+            
+            let html = `
+                <div class="question">
+                    <span class="difficulty-badge ${question.difficulty}">${question.difficulty.toUpperCase()}</span>
+                    <h3>Q${question.id}: ${question.question}</h3>
+            `;
+
+            if (question.type === 'mcq') {
+                html += '<div class="options">';
+                question.options.forEach((option, index) => {
+                    const isSelected = userAnswers[question.id] === index;
+                    html += `
+                        <div class="option ${isSelected ? 'selected' : ''}" onclick="selectOption(${index})">
+                            ${String.fromCharCode(65 + index)}. ${option}
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            } else if (question.type === 'text') {
+                const userAnswer = userAnswers[question.id] || '';
+                html += `
+                    <textarea class="text-input" placeholder="Enter your answer here..." 
+                             onchange="saveTextAnswer(this.value)">${userAnswer}</textarea>
+                `;
+            }
+
+            html += `
+                    <div class="navigation">
+                        <button class="btn btn-secondary" onclick="previousQuestion()" 
+                                ${currentQuestion === 0 ? 'disabled' : ''}>
+                            Previous
+                        </button>
+                        <span style="color: #666;">Question ${currentQuestion + 1} of ${questions.length}</span>
+                        <button class="btn btn-primary" onclick="nextQuestion()">
+                            ${currentQuestion === questions.length - 1 ? 'Finish Exam' : 'Next'}
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML = html;
             updateProgress();
         }
 
-        function checkAnswer(selectedOption) {
-            clearInterval(timerInterval);
-            feedbackEl.style.display = 'block';
-            if (selectedOption === quizData[currentQuestion].answer) {
-                score++;
-                feedbackEl.textContent = 'Awesome job! 🎉';
-                feedbackEl.style.color = '#4caf50';
-            } else {
-                feedbackEl.textContent = 'Oops, not quite! Keep going 💪';
-                feedbackEl.style.color = '#ff5722';
-            }
-            feedbackTimeout = setTimeout(() => {
-                feedbackEl.style.display = 'none';
+        function selectOption(optionIndex) {
+            userAnswers[questions[currentQuestion].id] = optionIndex;
+            renderQuestion();
+        }
+
+        function saveTextAnswer(value) {
+            userAnswers[questions[currentQuestion].id] = value.trim();
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
                 currentQuestion++;
-                loadQuestion();
-            }, 1500);
-        }
-
-        function startTimer() {
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                timerEl.textContent = timeLeft;
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    feedbackEl.style.display = 'block';
-                    feedbackEl.textContent = 'Time\'s up! ⏰ Let\'s move on.';
-                    feedbackEl.style.color = '#ff5722';
-                    feedbackTimeout = setTimeout(() => {
-                        feedbackEl.style.display = 'none';
-                        currentQuestion++;
-                        loadQuestion();
-                    }, 1500);
-                }
-            }, 1000);
-        }
-
-        function updateProgress() {
-            const progress = (currentQuestion / quizData.length) * 100;
-            progressEl.style.width = `${progress}%`;
-        }
-
-        function endQuiz() {
-            clearInterval(timerInterval);
-            clearTimeout(feedbackTimeout);
-            questionEl.style.display = 'none';
-            optionsEl.style.display = 'none';
-            document.querySelector('.timer').style.display = 'none';
-            document.querySelector('.progress-bar').style.display = 'none';
-            resultEl.style.display = 'block';
-            scoreEl.textContent = score;
-            submitForm.style.display = 'block';
-            hiddenScore.value = score;
-            codeSection.style.display = 'block';
-            restartBtn.style.display = 'block';
-            if (score >= 30) {
-                resultEl.innerHTML += '<br>Congrats, you\'re a DS/ML rockstar! 🌟';
-            } else if (score >= 20) {
-                resultEl.innerHTML += '<br>Solid effort—keep practicing! 👍';
+                renderQuestion();
             } else {
-                resultEl.innerHTML += '<br>Don\'t worry, Rome wasn\'t built in a day! 📈';
+                finishExam();
             }
         }
 
-        restartBtn.onclick = () => {
-            currentQuestion = 0;
-            score = 0;
-            questionEl.style.display = 'block';
-            optionsEl.style.display = 'flex';
-            document.querySelector('.timer').style.display = 'block';
-            document.querySelector('.progress-bar').style.display = 'block';
-            resultEl.style.display = 'none';
-            submitForm.style.display = 'none';
-            codeSection.style.display = 'none';
-            restartBtn.style.display = 'none';
-            loadQuestion();
-        };
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                renderQuestion();
+            }
+        }
 
-        loadQuestion();
+        function calculateScore() {
+            let correctAnswers = 0;
+            
+            questions.forEach(question => {
+                const userAnswer = userAnswers[question.id];
+                
+                if (question.type === 'mcq') {
+                    if (userAnswer === question.correct) {
+                        correctAnswers++;
+                    }
+                } else if (question.type === 'text') {
+                    // Simple text matching for demonstration
+                    if (userAnswer && question.answer && 
+                        userAnswer.toLowerCase().includes(question.answer.toLowerCase().substring(0, 10))) {
+                        correctAnswers++;
+                    }
+                }
+            });
+            
+            return Math.round((correctAnswers / questions.length) * 100);
+        }
+
+        function getScoreCategory(score) {
+            if (score >= 90) return { class: 'excellent', message: 'Outstanding! 🌟', feedback: 'You have exceptional knowledge in Data Science and ML. You\'re ready for senior roles!' };
+            if (score >= 75) return { class: 'good', message: 'Great job! 🎯', feedback: 'Strong understanding! With a bit more practice on advanced topics, you\'ll be unstoppable.' };
+            if (score >= 60) return { class: 'average', message: 'Good effort! 📈', feedback: 'Solid foundation! Focus on intermediate and advanced concepts to level up your skills.' };
+            return { class: 'needs-improvement', message: 'Keep learning! 💪', feedback: 'Don\'t worry - everyone starts somewhere. Review the basics and practice more problems.' };
+        }
+
+        function createConfetti() {
+            const celebration = document.getElementById('celebration');
+            celebration.classList.remove('hidden');
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.animationDelay = Math.random() * 3 + 's';
+                confetti.style.backgroundColor = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7'][Math.floor(Math.random() * 5)];
+                celebration.appendChild(confetti);
+            }
+            
+            setTimeout(() => {
+                celebration.classList.add('hidden');
+                celebration.innerHTML = '';
+            }, 4000);
+        }
+
+        function finishExam() {
+            score = calculateScore();
+            const scoreData = getScoreCategory(score);
+            
+            document.getElementById('questionContainer').classList.add('hidden');
+            document.getElementById('resultsContainer').classList.remove('hidden');
+            
+            const scoreCircle = document.getElementById('scoreCircle');
+            const finalScore = document.getElementById('finalScore');
+            const feedback = document.getElementById('feedback');
+            
+            scoreCircle.className = `score-circle ${scoreData.class}`;
+            finalScore.textContent = `${score}%`;
+            feedback.innerHTML = `
+                <h3>${scoreData.message}</h3>
+                <p>${scoreData.feedback}</p>
+                <p><strong>You answered ${Math.round((score/100) * questions.length)} out of ${questions.length} questions correctly!</strong></p>
+            `;
+            
+            if (score >= 75) {
+                createConfetti();
+            }
+        }
+
+        function sendResults() {
+            const email = document.getElementById('emailInput').value;
+            if (!email || !email.includes('@')) {
+                alert('Please enter a valid email address');
+                return;
+            }
+
+            // Create detailed results
+            const results = {
+                email: email,
+                score: score,
+                totalQuestions: questions.length,
+                correctAnswers: Math.round((score/100) * questions.length),
+                timestamp: new Date().toISOString(),
+                breakdown: {
+                    basic: { total: 15, correct: 0 },
+                    intermediate: { total: 20, correct: 0 },
+                    advanced: { total: 15, correct: 0 }
+                },
+                answers: {}
+            };
+
+            // Calculate breakdown by difficulty
+            questions.forEach(question => {
+                const userAnswer = userAnswers[question.id];
+                let isCorrect = false;
+                
+                if (question.type === 'mcq') {
+                    isCorrect = userAnswer === question.correct;
+                } else if (question.type === 'text') {
+                    isCorrect = userAnswer && question.answer && 
+                               userAnswer.toLowerCase().includes(question.answer.toLowerCase().substring(0, 10));
+                }
+                
+                if (isCorrect) {
+                    results.breakdown[question.difficulty].correct++;
+                }
+                
+                results.answers[question.id] = {
+                    question: question.question,
+                    userAnswer: question.type === 'mcq' ? 
+                              (userAnswer !== undefined ? question.options[userAnswer] : 'Not answered') : 
+                              (userAnswer || 'Not answered'),
+                    correctAnswer: question.type === 'mcq' ? question.options[question.correct] : question.answer,
+                    isCorrect: isCorrect,
+                    difficulty: question.difficulty
+                };
+            });
+
+            // Here you would typically send to your backend
+            // For demonstration, we'll create a mailto link with results
+            const subject = `Data Science & ML Exam Results - ${score}%`;
+            const body = `
+Hi there!
+
+Congratulations on completing the Data Science & ML Mastery Challenge!
+
+Your Results:
+- Overall Score: ${score}% (${results.correctAnswers}/${results.totalQuestions})
+- Basic Level: ${results.breakdown.basic.correct}/${results.breakdown.basic.total} (${Math.round((results.breakdown.basic.correct/results.breakdown.basic.total)*100)}%)
+- Intermediate Level: ${results.breakdown.intermediate.correct}/${results.breakdown.intermediate.total} (${Math.round((results.breakdown.intermediate.correct/results.breakdown.intermediate.total)*100)}%)
+- Advanced Level: ${results.breakdown.advanced.correct}/${results.breakdown.advanced.total} (${Math.round((results.breakdown.advanced.correct/results.breakdown.advanced.total)*100)}%)
+
+Completed on: ${new Date().toLocaleDateString()}
+
+Keep up the great work in your data science journey!
+
+Best regards,
+The DS & ML Challenge Team
+            `.trim();
+
+            // Create mailto link
+            const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            window.open(mailtoLink);
+            
+            alert('Your results have been prepared! Check your email client to send the detailed report to yourself.');
+        }
+
+        // Initialize the exam
+        renderQuestion();
     </script>
 </body>
-</html>
-Notes on the Code:
-
-Replace YOUR_FORM_ID in the form action with your actual Formspree form ID (see below for setup).
-The MCQs start basic (first 20) and get advanced (last 20).
-Emotional elements: Feedback messages with emojis, motivational end notes, timer with emoji for urgency.
-Code exercises are displayed at the end for self-practice (based on real DS/ML problems).
-How to Launch on GitHub
-Create a GitHub Account: If you don't have one, sign up at github.com.
-Create a New Repository: Go to your GitHub dashboard, click "New" > Name it (e.g., "ds-ml-quiz") > Make it public > Create repository.
-Upload the File: In the repo, click "Add file" > "Upload files" > Drag index.html > Commit changes.
-Enable GitHub Pages: Go to repo Settings > Pages (left menu) > Under "Source", select "main" branch > Save. GitHub will provide a URL like https://yourusername.github.io/ds-ml-quiz/.
-Access the Platform: Visit the URL in a browser. It's live and interactive!
-How to Collect Scores via Email Using Formspree
-Formspree handles form submissions and emails without a server. It's free for up to 50 submissions/month.
-
-Sign Up on Formspree: Go to formspree.io > Register (free tier) > Create a new form. You'll get a form ID (e.g., "xabcde").
-
-Update the Code: Replace YOUR_FORM_ID in the <form action=...> with your ID.
-
-Customize Email Template: In Formspree dashboard > Your form > Settings > Customize the email notification template. Use a good template like this (paste into their editor):
-
-text
-Subject: DS/ML Quiz Score Submission
-
-Hi Admin,
-
-A user has completed the quiz!
-
-Name: {{name}}
-Email: {{email}}
-Score: {{score}} out of 40
-
-Keep up the great work encouraging learners! 🌟
-
-Best,
-Formspree
-This is a simple, professional template with placeholders for data. You can add HTML for styling (e.g., bold text, colors).
-
-Test It: Take the quiz, submit the form at the end. You'll receive an email with the details. Formspree also stores submissions in your dashboard for review.
-
-This setup is fun, educational, and easy to maintain. If you need customizations (e.g., more questions or Pyodide for in-browser code execution), let me know!
-
-Which part of the code should I really copy and paste?
-To create the interactive Data Science/ML Practice Exam platform, you should copy and paste the entire index.html code provided in the previous response into a file named index.html. This single file contains all the necessary HTML, CSS, and JavaScript to run the quiz platform, including the 40 MCQs, 10 code exercises, emotional design elements, and the Formspree form for score submission.
-
-What to Copy
-The full code block starting from <!DOCTYPE html> to the closing </html> tag, including:
-The HTML structure.
-The embedded <style> section (CSS for styling the quiz, progress bar, and emotional elements like feedback messages).
-The embedded <script> section (JavaScript for quiz logic, timer, score calculation, and emotional feedback).
-The form with the Formspree action URL for score submission.
-The code exercises section for self-practice.
-Key Step Before Saving
-Replace the Formspree ID: In the <form> tag, replace YOUR_FORM_ID with your actual Formspree form ID:
-html
-<form action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
-To get your Formspree ID:
-Sign up at formspree.io.
-Create a new form.
-Copy the form ID (e.g., xabcde) from your Formspree dashboard and insert it into the URL.
-How to Use the Copied Code
-Create a File: Open a text editor (e.g., Notepad, VS Code) and paste the entire code.
-Save the File: Save it as index.html (ensure the extension is .html).
-Test Locally: Open the file in a browser to test the quiz locally.
-Deploy to GitHub: Follow the GitHub deployment steps provided earlier:
-Create a GitHub repository.
-Upload index.html.
-Enable GitHub Pages in the repo Settings > Pages > Select "main" branch > Save.
-Access the quiz at https://yourusername.github.io/your-repo-name/.
-Important Notes
-The code is self-contained, so you don’t need additional files unless you want to extend it (e.g., separate CSS/JS files or images).
-The 40 MCQs are included in the quizData array in the JavaScript section. The 10 code exercises are in the HTML under <div class="code-section">.
-If you want to modify questions, edit the quizData array in the <script> section by adding or changing question objects.
-For the email template, configure it in your Formspree dashboard as described earlier, using the suggested template or your own.
-If you only want to copy a specific part (e.g., just the questions or the form), let me know, and I can isolate that section for you! Otherwise, the full index.html code is ready to go.
-
-62.9s
-Which part of the code should I copy and paste?
-You should copy and paste the entire index.html code provided in the earlier response, from <!DOCTYPE html> to the closing </html> tag, into a file named index.html. This single file includes everything needed for the interactive Data Science/ML Practice Exam platform:
-
-HTML: The structure of the quiz, including the question display, options, timer, progress bar, form for score submission, and code exercise section.
-CSS (in the <style> tag): Styling for the quiz layout, buttons, feedback messages, and emotional design elements (e.g., colorful progress bar, hover effects).
-JavaScript (in the <script> tag): Logic for loading questions, handling answers, timing (30 seconds per question), calculating scores, displaying feedback (e.g., "Awesome job! 🎉"), and managing the quiz flow.
-Formspree Form: For submitting the user’s name, email, and score.
-40 MCQs and 10 Code Exercises: Embedded in the JavaScript (quizData array for MCQs) and HTML (code exercises under <div class="code-section">).
-Specific Action Required
-Before saving the file, replace the placeholder Formspree ID in this line:
-
-html
-<form action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
-with your actual Formspree form ID:
-
-Sign up at formspree.io (free tier is sufficient).
-Create a new form in the Formspree dashboard.
-Copy the form ID (e.g., xabcde) and insert it into the URL, so it becomes, for example:
-html
-<form action="https://formspree.io/f/xabcde" method="POST">
-Steps to Use the Code
-Copy the Code: Select and copy the entire code block from the previous response, starting with <!DOCTYPE html> and ending with </html>.
-Paste into a File: Open a text editor (e.g., Notepad, VS Code) and paste the code.
-Save as index.html: Ensure the file is saved with the .html extension.
-Test Locally: Double-click the file to open it in a browser and test the quiz.
-Deploy to GitHub (as described previously):
-Create a GitHub repository (e.g., ds-ml-quiz).
-Upload index.html to the repository.
-Go to Settings > Pages > Set the source to the main branch > Save.
-Access the live quiz at https://yourusername.github.io/ds-ml-quiz/.
-Notes
-The code is fully self-contained, so no additional files are needed unless you want to add features (e.g., external CSS/JS or images).
-The 40 MCQs are in the quizData array in the JavaScript section. To modify questions, edit this array.
-The 10 code exercises are in the HTML under <div class="code-section">. They’re designed for self-practice (no auto-grading).
-Emotional design is included via feedback messages (e.g., "Oops, not quite! Keep going 💪") and emojis in the JavaScript and HTML.
-If you only want a specific part (e.g., just the quizData array or the form), let me know, and I can provide that section alone. Otherwise, copying the entire code into index.html gives you the complete, ready-to-use platform.
-
-4.6s
+    </html>
